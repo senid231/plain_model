@@ -7,22 +7,23 @@ module PlainModel
     module Where
       extend ActiveSupport::Concern
 
-      def initialize(*args)
-        super(*args)
-        values[:where] = {}
-      end
-
-      included do
-        self.chainable_methods += [:except]
+      def initial_values
+        super.merge where: []
       end
 
       # Chain method
-      # @param conditions [Hash]
+      # @param conditions [Array]
       # @return new instance with applied changes
-      def where(conditions)
-        _within_new_instance do
-          values[:where].merge!(conditions)
-        end
+      def where(*conditions)
+        dup.where!(*conditions)
+      end
+
+      # Chain method
+      # @param conditions [Array]
+      # @return current instance with applied changes
+      def where!(*conditions)
+        values[:where] = (values[:where] + conditions).uniq
+        self
       end
     end
   end

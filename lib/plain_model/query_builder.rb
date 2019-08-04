@@ -9,9 +9,9 @@ require_relative 'querying/includes'
 module PlainModel
   class QueryBuilder
     include PlainModel::Querying::Base
-    include PlainModel::Querying::WithModel
-    include PlainModel::Querying::Except
     include PlainModel::Querying::Where
     include PlainModel::Querying::Includes
+    include PlainModel::Querying::Except
+    include PlainModel::Querying::WithModel
   end
 end

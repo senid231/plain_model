@@ -9,23 +9,24 @@ module PlainModel
     module Includes
       extend ActiveSupport::Concern
 
-      def initialize(*args)
-        super(*args)
-        values[:includes] = {}
-      end
-
-      included do
-        self.chainable_methods += [:includes]
+      def initial_values
+        super.merge includes: {}
       end
 
       # Chain method
       # @param names [Array<Symbol,Hash>] - names of includes with optional tail hash for nested includes
       # @return new instance with applied changes
       def includes(*names)
-        _within_new_instance do
-          new_includes = ::PlainModel::MergeIncludes.new(values[:includes]).merge(names)
-          values[:includes] = new_includes
-        end
+        dup.includes!(*names)
+      end
+
+      # Chain method
+      # @param names [Array<Symbol,Hash>] - names of includes with optional tail hash for nested includes
+      # @return current instance with applied changes
+      def includes!(*names)
+        new_includes = ::PlainModel::MergeIncludes.new(values[:includes]).merge(names)
+        values[:includes] = new_includes
+        self
       end
     end
   end

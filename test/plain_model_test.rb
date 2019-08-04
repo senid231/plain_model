@@ -49,7 +49,7 @@ class PlainModelTest < Minitest::Test
     assert_equal 1, record.id
     assert_equal 'John', record.name
     expected_query = {
-        where: { name: 'John', hired: true },
+        where: [name: 'John', hired: true],
         includes: { boss: {}, colleagues: { boss: {} } }
     }
     assert_equal expected_query, record._query

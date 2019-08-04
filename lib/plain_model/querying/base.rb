@@ -10,25 +10,19 @@ module PlainModel
       extend ActiveSupport::Concern
 
       included do
-        class_attribute :chainable_methods, instance_accessor: false, default: []
-
-        class_attribute :result_methods,
-                        instance_accessor: false,
-                        default: [:to_a, :first, :last, :each, :collect, :map, :select, :detect]
-
         extend Forwardable
-        attr_reader :values
-        instance_delegate [:first, :last, :each, :collect, :map, :select, :detect] => :all
-        private :_within_new_instance, :_records
+        attr_accessor :values
+        instance_delegate [:first, :last, :each, :collect, :map, :filter, :detect] => :to_a
+        private :_records
+      end
 
-        def initialize(*args)
-          @values = {}
-          super(*args)
-        end
+      def initialize(*args)
+        @values = initial_values
+        super(*args)
+      end
 
-        protected
-
-        attr_writer :values
+      def initial_values
+        {}
       end
 
       def to_a
@@ -45,12 +39,6 @@ module PlainModel
 
       def dup_args
         []
-      end
-
-      def _within_new_instance(&block)
-        new_instance = dup
-        new_instance.instance_exec(&block)
-        new_instance
       end
 
       def _records

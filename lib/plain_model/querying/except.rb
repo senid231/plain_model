@@ -11,14 +11,17 @@ module PlainModel
       # @param keys [Array<Symbol>] values keys that you want to exclude from query
       # @return new instance with applied changes
       def except(*keys)
-        _within_new_instance do
-          self.values = values.except(*keys)
-        end
+        dup.except!(*keys)
       end
 
-      included do
-        self.chainable_methods += [:except]
+      # Chain method
+      # @param keys [Array<Symbol>] values keys that you want to exclude from query
+      # @return new instance with applied changes
+      def except!(*keys)
+        self.values = values.except(*keys)
+        self
       end
+
     end
   end
 end

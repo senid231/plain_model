@@ -7,24 +7,24 @@ module PlainModel
     module WithModel
       extend ActiveSupport::Concern
 
+      included do
+        attr_reader :model_class
+        private :_records
+      end
+
       def initialize(model_class, *args)
         @model_class = model_class
         super(*args)
       end
 
-      included do
-        attr_reader :model_class
-
-        def dup_args
-          [model_class]
-        end
-
-        private
-
-        def _records
-          model_class._records(values)
-        end
+      def dup_args
+        super + [model_class]
       end
+
+      def _records
+        model_class._records(values)
+      end
+
     end
   end
 end
